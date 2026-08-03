@@ -3,13 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Perekam & Summary Meeting AI</title>
+  <title>Perekam & Transkrip Meeting Web</title>
   <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #f0f4f9; color: #333; max-width: 650px; margin: auto; }
     .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
     h2 { margin-top: 0; color: #1a73e8; font-size: 22px; }
     
-    /* Box Panduan / Tips */
     .guide-box { background-color: #e8f0fe; border-left: 4px solid #1a73e8; padding: 14px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; line-height: 1.5; color: #1e3a8a; }
     .guide-box ul { margin: 6px 0 0 0; padding-left: 18px; }
     .guide-box li { margin-bottom: 4px; }
@@ -37,16 +36,14 @@
 <body>
 
   <div class="card">
-    <h2>🎙️ Perekam & Notulen AI Meeting</h2>
+    <h2>🎙️ Perekam & Transkrip Meeting</h2>
 
-    <!-- Kotak Petunjuk Penggunaan -->
     <div class="guide-box">
-      <strong>📌 Panduan Agar Hasil Transkrip & AI Akurat:</strong>
+      <strong>📌 Panduan Penggunaan Aplikasi:</strong>
       <ul>
-        <li><b>Mikrofon di Tengah:</b> Jika meeting tatap muka bersama, letakkan laptop/mikrofon di tengah meja agar semua suara terdengar seimbang.</li>
-        <li><b>Volume Suara Cukup Kuat:</b> Berbicaralah dengan artikulasi jelas dan tidak berbisik.</li>
-        <li><b>Sebut Nama Saat Berbicara:</b> Biasakan menyebut nama (misal: <i>"Dari saya Budi..."</i> atau <i>"Bagaimana menurut Ani?"</i>) agar AI dapat mengelompokkan poin pembicaraan per orang.</li>
-        <li><b>Gunakan Google Chrome:</b> Fitur pengenal suara bekerja paling optimal di browser Chrome (PC/Laptop).</li>
+        <li><b>Mikrofon di Tengah:</b> Jika rapat bersama, letakkan laptop/mikrofon di tengah meja.</li>
+        <li><b>Volume Suara Cukup Kuat:</b> Berbicaralah dengan artikulasi jelas agar transkrip akurat.</li>
+        <li><b>Gunakan Google Chrome:</b> Fitur pengenal suara bekerja paling optimal di browser Google Chrome (PC/Laptop).</li>
       </ul>
     </div>
 
@@ -55,9 +52,8 @@
 
     <label for="peserta">Daftar Peserta Meeting <span class="required-tag">*Wajib</span>:</label>
     <input type="text" id="peserta" placeholder="Contoh: Budi, Ani, Candra, Dedi" required>
-    <div class="small-info">*Diperlukan oleh AI untuk mengenali siapa saja yang berada di dalam meeting.</div>
 
-    <label for="email">Email Penerima Summary <span class="required-tag">*Wajib</span>:</label>
+    <label for="email">Email Penerima Transkrip <span class="required-tag">*Wajib</span>:</label>
     <input type="email" id="email" placeholder="Contoh: atasan@perusahaan.com, tim@perusahaan.com" required>
     <div class="small-info">*Pisahkan dengan koma jika dikirim ke lebih dari 1 email.</div>
 
@@ -70,13 +66,12 @@
     <label for="transkrip">Transkrip Real-Time / Catatan Teks:</label>
     <textarea id="transkrip" rows="7" placeholder="Transkrip pembicaraan akan otomatis muncul di sini saat Anda berbicara..."></textarea>
 
-    <button id="btnSave" class="btn-save" onclick="simpanData()">Simpan & Kirim Ringkasan AI</button>
+    <button id="btnSave" class="btn-save" onclick="simpanData()">Simpan & Kirim Email</button>
   </div>
 
   <script>
     // ⚠️ GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
-    //const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwn8TnvMWjXXW8Vu6cMZQUfgKXcEUS3uEDoxGNrL4NMo7B2qhQArwHmZ7_dk6lXAOfu/exec";
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZjj0T1j12sQo5cNvqxBwAtdastVnrrwcXZVxyGmZbWebZ9W47-pVfK7u0Y7AYvxGo/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMjHBrU8PUzRZXGoC24mRzaOfFt1c0OUmxnItANEhdKG4HYZJTO1d9_T0_M0O_WS9s/exec";
 
     let recognition;
     let isRecording = false;
@@ -160,7 +155,6 @@
       const emailInput = document.getElementById('email').value.trim();
       const transkripInput = document.getElementById('transkrip').value.trim();
 
-      // Validasi Wajib Isi
       if (!pesertaInput) {
         alert("Harap isi Daftar Peserta Meeting terlebih dahulu!");
         document.getElementById('peserta').focus();
@@ -168,7 +162,7 @@
       }
 
       if (!emailInput) {
-        alert("Harap isi Email Penerima Summary terlebih dahulu!");
+        alert("Harap isi Email Penerima terlebih dahulu!");
         document.getElementById('email').focus();
         return;
       }
@@ -185,7 +179,7 @@
 
       const btnSave = document.getElementById('btnSave');
       btnSave.disabled = true;
-      btnSave.innerText = "⏳ Sedang memproses AI & Mengirim Email...";
+      btnSave.innerText = "⏳ Sedang menyimpan & Mengirim Email...";
 
       const payload = {
         judul: document.getElementById('judul').value.trim(),
@@ -201,14 +195,14 @@
         body: JSON.stringify(payload)
       })
       .then(() => {
-        alert("Data berhasil dikirim! Ringkasan meeting berbasis AI sedang diproses dan dikirimkan ke " + emailInput);
+        alert("Data berhasil dikirim! Transkrip telah disimpan ke Sheet dan dikirimkan ke " + emailInput);
         btnSave.disabled = false;
-        btnSave.innerText = "Simpan & Kirim Ringkasan AI";
+        btnSave.innerText = "Simpan & Kirim Email";
       })
       .catch(err => {
         alert("Gagal mengirim data: " + err);
         btnSave.disabled = false;
-        btnSave.innerText = "Simpan & Kirim Ringkasan AI";
+        btnSave.innerText = "Simpan & Kirim Email";
       });
     }
   </script>
