@@ -20,6 +20,7 @@
     .status { margin-top: 12px; padding: 10px; border-radius: 6px; font-size: 14px; text-align: center; }
     .recording-active { background: #fce8e6; color: #c5221f; font-weight: bold; }
     .recording-idle { background: #e8f0fe; color: #1a73e8; }
+    .small-info { font-size: 12px; color: #666; margin-top: 4px; }
   </style>
 </head>
 <body>
@@ -32,6 +33,10 @@
 
     <label for="peserta">Daftar Peserta:</label>
     <input type="text" id="peserta" placeholder="Contoh: Budi, Ani, Candra">
+
+    <label for="email">Email Penerima Summary:</label>
+    <input type="email" id="email" placeholder="Contoh: email@perusahaan.com, tim@perusahaan.com">
+    <div class="small-info">* Pisahkan dengan koma jika mengirim ke beberapa email sekaligus.</div>
 
     <label>Kontrol Suara:</label>
     <button id="btnStart" class="btn-start" onclick="startRecording()">Mulai Merekam</button>
@@ -47,8 +52,7 @@
 
   <script>
     // ⚠️ TEMPELKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
-    //const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx.../exec";
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwn8TnvMWjXXW8Vu6cMZQUfgKXcEUS3uEDoxGNrL4NMo7B2qhQArwHmZ7_dk6lXAOfu/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx.../exec";
 
     let recognition;
     let isRecording = false;
@@ -140,6 +144,7 @@
       const payload = {
         judul: document.getElementById('judul').value,
         peserta: document.getElementById('peserta').value,
+        email: document.getElementById('email').value,
         transkrip: document.getElementById('transkrip').value
       };
 
@@ -150,7 +155,7 @@
         body: JSON.stringify(payload)
       })
       .then(() => {
-        alert("Data berhasil dikirim dan akan diproses ke Google Sheets & Email!");
+        alert("Data berhasil dikirim dan email summary akan diproses!");
         btnSave.disabled = false;
         btnSave.innerText = "Simpan & Kirim Email";
       })
