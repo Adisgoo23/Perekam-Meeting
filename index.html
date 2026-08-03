@@ -3,56 +3,79 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Perekam & Summary Meeting</title>
+  <title>Perekam & Summary Meeting AI</title>
   <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #f7f9fc; color: #333; max-width: 600px; margin: auto; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #f0f4f9; color: #333; max-width: 650px; margin: auto; }
     .card { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    h2 { margin-top: 0; color: #1a73e8; }
-    label { font-weight: 600; display: block; margin-top: 14px; margin-bottom: 6px; }
+    h2 { margin-top: 0; color: #1a73e8; font-size: 22px; }
+    
+    /* Box Panduan / Tips */
+    .guide-box { background-color: #e8f0fe; border-left: 4px solid #1a73e8; padding: 14px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; line-height: 1.5; color: #1e3a8a; }
+    .guide-box ul { margin: 6px 0 0 0; padding-left: 18px; }
+    .guide-box li { margin-bottom: 4px; }
+
+    label { font-weight: 600; display: block; margin-top: 14px; margin-bottom: 6px; font-size: 14px; }
+    .required-tag { color: #d93025; font-weight: bold; }
+    
     input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 14px; }
+    input:focus, textarea:focus { border-color: #1a73e8; outline: none; }
+    
     button { width: 100%; padding: 12px; margin-top: 16px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; transition: background 0.2s; }
     .btn-start { background: #1a73e8; color: white; }
     .btn-start:hover { background: #1557b0; }
     .btn-stop { background: #ea4335; color: white; display: none; }
     .btn-stop:hover { background: #d93025; }
-    .btn-save { background: #34a853; color: white; margin-top: 20px; }
+    .btn-save { background: #34a853; color: white; margin-top: 20px; font-size: 16px; }
     .btn-save:hover { background: #2d8e47; }
+    
     .status { margin-top: 12px; padding: 10px; border-radius: 6px; font-size: 14px; text-align: center; }
     .recording-active { background: #fce8e6; color: #c5221f; font-weight: bold; }
-    .recording-idle { background: #e8f0fe; color: #1a73e8; }
-    .small-info { font-size: 12px; color: #666; margin-top: 4px; }
+    .recording-idle { background: #f1f3f4; color: #5f6368; }
+    .small-info { font-size: 11px; color: #666; margin-top: 4px; }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h2>🎙️ Perekam Hasil Meeting</h2>
+    <h2>🎙️ Perekam & Notulen AI Meeting</h2>
+
+    <!-- Kotak Petunjuk Penggunaan -->
+    <div class="guide-box">
+      <strong>📌 Panduan Agar Hasil Transkrip & AI Akurat:</strong>
+      <ul>
+        <li><b>Mikrofon di Tengah:</b> Jika meeting tatap muka bersama, letakkan laptop/mikrofon di tengah meja agar semua suara terdengar seimbang.</li>
+        <li><b>Volume Suara Cukup Kuat:</b> Berbicaralah dengan artikulasi jelas dan tidak berbisik.</li>
+        <li><b>Sebut Nama Saat Berbicara:</b> Biasakan menyebut nama (misal: <i>"Dari saya Budi..."</i> atau <i>"Bagaimana menurut Ani?"</i>) agar AI dapat mengelompokkan poin pembicaraan per orang.</li>
+        <li><b>Gunakan Google Chrome:</b> Fitur pengenal suara bekerja paling optimal di browser Chrome (PC/Laptop).</li>
+      </ul>
+    </div>
 
     <label for="judul">Judul Meeting:</label>
-    <input type="text" id="judul" placeholder="Contoh: Diskusi Proyek Q3">
+    <input type="text" id="judul" placeholder="Contoh: Diskusi Evaluasi Proyek Q3">
 
-    <label for="peserta">Daftar Peserta:</label>
-    <input type="text" id="peserta" placeholder="Contoh: Budi, Ani, Candra">
+    <label for="peserta">Daftar Peserta Meeting <span class="required-tag">*Wajib</span>:</label>
+    <input type="text" id="peserta" placeholder="Contoh: Budi, Ani, Candra, Dedi" required>
+    <div class="small-info">*Diperlukan oleh AI untuk mengenali siapa saja yang berada di dalam meeting.</div>
 
-    <label for="email">Email Penerima Summary:</label>
-    <input type="email" id="email" placeholder="Contoh: email@perusahaan.com, tim@perusahaan.com">
-    <div class="small-info">* Pisahkan dengan koma jika mengirim ke beberapa email sekaligus.</div>
+    <label for="email">Email Penerima Summary <span class="required-tag">*Wajib</span>:</label>
+    <input type="email" id="email" placeholder="Contoh: atasan@perusahaan.com, tim@perusahaan.com" required>
+    <div class="small-info">*Pisahkan dengan koma jika dikirim ke lebih dari 1 email.</div>
 
-    <label>Kontrol Suara:</label>
+    <label>Kontrol Rekaman Audio:</label>
     <button id="btnStart" class="btn-start" onclick="startRecording()">Mulai Merekam</button>
     <button id="btnStop" class="btn-stop" onclick="stopRecording()">Hentikan Merekam</button>
 
     <div id="statusBox" class="status recording-idle">Status: Siap merekam.</div>
 
-    <label for="transkrip">Transkrip Real-time / Catatan:</label>
-    <textarea id="transkrip" rows="8" placeholder="Transkrip percakapan akan muncul otomatis di sini..."></textarea>
+    <label for="transkrip">Transkrip Real-Time / Catatan Teks:</label>
+    <textarea id="transkrip" rows="7" placeholder="Transkrip pembicaraan akan otomatis muncul di sini saat Anda berbicara..."></textarea>
 
-    <button id="btnSave" class="btn-save" onclick="simpanData()">Simpan & Kirim Email</button>
+    <button id="btnSave" class="btn-save" onclick="simpanData()">Simpan & Kirim Ringkasan AI</button>
   </div>
 
   <script>
-    // ⚠️ TEMPELKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwn8TnvMWjXXW8Vu6cMZQUfgKXcEUS3uEDoxGNrL4NMo7B2qhQArwHmZ7_dk6lXAOfu/exec";
+    // ⚠️ GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx.../exec";
 
     let recognition;
     let isRecording = false;
@@ -65,7 +88,7 @@
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
       if (!SpeechRecognition) {
-        alert("Browser Anda tidak mendukung Web Speech API. Gunakan Google Chrome di Laptop/PC.");
+        alert("Browser Anda tidak mendukung Web Speech API. Harap gunakan Google Chrome di Laptop/PC.");
         return;
       }
 
@@ -85,7 +108,7 @@
       recognition.onerror = function(event) {
         console.error("Speech Error:", event.error);
         if (event.error === 'not-allowed') {
-          alert("Akses mikrofon ditolak! Izinkan akses mikrofon di pengaturan browser Anda.");
+          alert("Akses mikrofon ditolak! Harap izinkan akses mikrofon di browser Anda.");
           stopRecording();
         }
       };
@@ -114,7 +137,7 @@
           status.innerText = '🔴 Merekam percakapan... Silakan berbicara.';
         })
         .catch(function(err) {
-          alert("Izin mikrofon ditolak atau tidak tersedia: " + err.message);
+          alert("Izin mikrofon tidak diberikan atau mikrofon tidak terdeteksi: " + err.message);
         });
     }
 
@@ -132,6 +155,28 @@
     }
 
     function simpanData() {
+      const pesertaInput = document.getElementById('peserta').value.trim();
+      const emailInput = document.getElementById('email').value.trim();
+      const transkripInput = document.getElementById('transkrip').value.trim();
+
+      // Validasi Wajib Isi
+      if (!pesertaInput) {
+        alert("Harap isi Daftar Peserta Meeting terlebih dahulu!");
+        document.getElementById('peserta').focus();
+        return;
+      }
+
+      if (!emailInput) {
+        alert("Harap isi Email Penerima Summary terlebih dahulu!");
+        document.getElementById('email').focus();
+        return;
+      }
+
+      if (!transkripInput) {
+        alert("Transkrip masih kosong! Mulai merekam atau ketik catatan sebelum menyimpan.");
+        return;
+      }
+
       if (!SCRIPT_URL || SCRIPT_URL.includes("AKfycbx...")) {
         alert("Variabel SCRIPT_URL belum diisi dengan URL Google Apps Script yang benar!");
         return;
@@ -139,13 +184,13 @@
 
       const btnSave = document.getElementById('btnSave');
       btnSave.disabled = true;
-      btnSave.innerText = "Mengirim...";
+      btnSave.innerText = "⏳ Sedang memproses AI & Mengirim Email...";
 
       const payload = {
-        judul: document.getElementById('judul').value,
-        peserta: document.getElementById('peserta').value,
-        email: document.getElementById('email').value,
-        transkrip: document.getElementById('transkrip').value
+        judul: document.getElementById('judul').value.trim(),
+        peserta: pesertaInput,
+        email: emailInput,
+        transkrip: transkripInput
       };
 
       fetch(SCRIPT_URL, {
@@ -155,14 +200,14 @@
         body: JSON.stringify(payload)
       })
       .then(() => {
-        alert("Data berhasil dikirim dan email summary akan diproses!");
+        alert("Data berhasil dikirim! Ringkasan meeting berbasis AI sedang diproses dan dikirimkan ke " + emailInput);
         btnSave.disabled = false;
-        btnSave.innerText = "Simpan & Kirim Email";
+        btnSave.innerText = "Simpan & Kirim Ringkasan AI";
       })
       .catch(err => {
         alert("Gagal mengirim data: " + err);
         btnSave.disabled = false;
-        btnSave.innerText = "Simpan & Kirim Email";
+        btnSave.innerText = "Simpan & Kirim Ringkasan AI";
       });
     }
   </script>
